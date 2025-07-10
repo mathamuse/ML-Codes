@@ -38,7 +38,7 @@ def update_center(data):
 
 ############################## Read file and check ############################
 
-df = pd.read_csv("C:/Users/nucle/IMPORTANT SCRIPTS/k-Modes simple 1.csv")
+df = pd.read_csv("C:/... data ..../k-Modes simple 1.csv")
 print(df)                                                  # mainly for testing
 
 df = df.drop("Unnamed: 0",axis=1)
