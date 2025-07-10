@@ -1,0 +1,82 @@
+############################## INCLUSIONS AND HEADERS #########################
+import pandas as pd
+import numpy as np
+from statistics import mode
+
+########################### A DISSIMILARITY DISTANCE CALCULATOR ###############
+def dis(x,y):
+    t=0
+    for i in range(len(x)):
+        if (x[i]!=y[i]): t+=1
+    return t
+
+########################### A DISTANCE MATRIX CALCULATOR #####################
+def dis_mat(x, centers):
+    distn = []
+    for i in range(len(centers)):
+        distn.append(dis(x,centers[i]))
+    
+    
+    pos = 0
+    for i in range(len(distn)):
+        if (distn[i]<distn[pos]):pos = i
+    
+    
+    return pos
+ 
+########################### UPDATE THE CENTERS USING k-MODES  #################   
+def update_center(data):
+   n = len(data.columns)
+       
+   center = []
+   for i in range(n):
+       #print(data.iloc[:,i])
+       center.append(mode(data.iloc[:,i]))
+   
+   #print(center)
+   return center
+
+############################## Read file and check ############################
+
+df = pd.read_csv("C:/Users/nucle/IMPORTANT SCRIPTS/k-Modes simple 1.csv")
+print(df)                                                  # mainly for testing
+
+df = df.drop("Unnamed: 0",axis=1)
+print(df)                                                  # mainly for testing 
+#'''
+############################ INPUT CENTERS ####################################
+centers =[['A','B','A','B'],['B','A','B','B'],['C','C','C','C']]
+print(centers[1])                                          # mainly for testing
+
+dm = df                                                    # store temporary 
+
+iterations = 300                                           # set number of iterations
+########################### START THE ITERATIONS ##############################
+for k in range(iterations):
+ temp=[]
+
+ for i in range(len(dm)):
+    t = dis_mat(df.iloc[i,], centers)                     # store the distance matrix
+    temp.append(t)                                        # store the cluster number in temp
+    
+ dm= dm.assign(C = temp)
+
+ for j in range(len(centers)):
+  t2=dm[dm['C']==j]                                       # collect the cluster
+  t2=t2.drop(['C'],axis=1)                                # clean data
+  #plot_cluster(t2)
+  z = update_center(t2)                                   # update the center
+  centers[j] = z                                          # store it as center[j]
+
+###############################################################################
+##                                 OUTPUT                                    ##
+###############################################################################
+for j in range(len(centers)):
+ t2=dm[dm['C']==j]
+ t2=t2.drop(['C'],axis=1)
+ #plot_cluster(t2)
+ print("Cluster with center ",j,"is:\n", t2)
+ 
+print("\n Current centers are :\n",centers)
+
+#'''
