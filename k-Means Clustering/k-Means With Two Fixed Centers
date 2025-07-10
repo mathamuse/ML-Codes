@@ -1,0 +1,82 @@
+############################## INCLUSIONS AND HEADERS #########################
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import math as mt
+########################### A EUCLIDEAN DISTANCE CALCULATOR ###################
+def dis(x1,y1,x2,y2):
+    t = mt.sqrt((x1-x2)**2 + (y1-y2)**2)
+    
+    return t
+############################## Read file and plot #############################
+
+df = pd.read_csv("/..... data ......./k-means_data_2d.csv")
+
+print(df)                                                  # mainly for testing
+#'''
+df=df.drop(['Unnamed: 0'],axis=1)
+
+print(df)                                                  # mainly for testing
+#'''
+plt.scatter(df["x"],df["y"])                               # preliminary plot
+#'''
+clstr_no = 2                                               # define number of clusters
+iterations = 5                                             # define number of iterations
+
+dist = pd.DataFrame()                                      # create a data-frame to store distances
+
+centres = []                                               # array to store centers
+############################ INPUT CENTERS ####################################
+centres.append([12,18])
+centres.append([6,10])
+
+print(centres)                                             # check
+#'''
+########################### START THE ITERATIONS ##############################
+dist["x"] = df["x"]                                        # store x-coordinates
+dist["y"] = df["y"]                                        # store y- coordinates
+
+for t in range(iterations):
+ for i in range(len(df)):
+  dist.loc[i,"d1"]=dis(dist.loc[i,"x"],dist.loc[i,"y"],centres[0][0],centres[0][1]) #store the distance from center[0] as dis[d1]
+  dist.loc[i,"d2"]=dis(dist.loc[i,"x"],dist.loc[i,"y"],centres[1][0],centres[1][1]) #store the distance from center[1] as dis[d2]
+  if (dist.loc[i,"d1"] <= dist.loc[i,"d2"]): 
+     dist.loc[i,"C"]= "red"                                # paint the points with dis1 < dis2 as "red" 
+     #print("Cluster C1")
+  else : dist.loc[i,"C"] = "blue"                          # paint the points with dis2 < dis1 as "blue"
+ 
+
+#print(dist[dist["C"]=="red"])
+
+#''' 
+ lenb = len(dist[dist["C"] =="blue"])                      # store length of "blue" cluster
+ lenr = len(dist[dist["C"] =="red"])                       # store length of "red" cluster
+
+ print("Red :",lenr , " Blue :",lenb)
+
+ newc1 =  dist[dist["C"] =="red"]                          # make array of "red" cluster
+ newc2 =  dist[dist["C"] =="blue"]                         # make array of "blue" cluster
+ newc1x = sum(newc1["x"])
+ newc1x = newc1x / lenr                                    # update new center x-ordinate as mean of cluster
+ newc1y = sum(newc1["y"])                                  # update new center y-ordinate as mean of cluster
+ newc1y = newc1y / lenr
+ newc2x = sum(newc2["x"])
+ newc2x = newc2x / lenb                                    # update new center x-ordinate as mean of cluster
+ newc2y = sum(newc2["y"])
+ newc2y = newc2y / lenb                                    # update new center y-ordinate as mean of cluster
+
+ centres[0][0] = newc1x                                    # store in centres array
+ centres[0][1] = newc1y
+ centres[1][0] = newc2x
+ centres[1][1] = newc2y
+
+
+ print(centres)                                            # Mainly for testing
+
+ ################### PLOTTING THE DATA #############################
+ plt.plot(centres[0][0],centres[0][1],marker='o', markersize=3, color="yellow")
+ plt.plot(centres[1][0],centres[1][1],marker='o', markersize=3, color="yellow")
+ plt.scatter(newc1["x"],newc1["y"],color = "blue")
+ plt.scatter(newc2["x"],newc2["y"],color = "red")
+ plt.show()
+#'''
